@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Prompt Diff">
+  <rect width="32" height="32" rx="7" fill="#0A0F1F"/>
+  <rect x="5.5" y="6.5" width="21" height="19" rx="2.2" fill="#121a33" stroke="#00D4FF" stroke-width="1.1"/>
+  <path d="M16 7.2v17.6" stroke="#00D4FF" stroke-opacity="0.35" stroke-width="1"/>
+  <path d="M8.4 16h5.4" stroke="#f43f5e" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M18.6 16h4.8M21 13.6v4.8" stroke="#4ade80" stroke-width="1.6" stroke-linecap="round"/>
+</svg>
