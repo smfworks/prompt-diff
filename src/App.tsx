@@ -144,8 +144,8 @@ export default function App() {
     <div className="page">
       <div className="ambient" aria-hidden="true" />
       <Header />
-      <SisterStrip current="prompt-diff" payload={after || before} />
-      <HandoffBanner onPaste={(text) => { setAfter(text); setSampleId(null); }} />
+      <SisterStrip current="prompt-diff" payload={after || before} kind="prompt-text" />
+      <HandoffBanner accept={["prompt-text", "plain"]} onPaste={(text) => { setAfter(text); setSampleId(null); }} />
       <main className="layout">
         <Composer
           before={before}
