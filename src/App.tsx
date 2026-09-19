@@ -13,6 +13,7 @@ import { Composer } from "./components/Composer";
 import { DiffCard } from "./components/DiffCard";
 import { Header } from "./components/Header";
 import { SisterStrip } from "./components/SisterStrip";
+import { HandoffBanner } from "./components/HandoffBanner";
 import { Toast } from "./components/Toast";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -143,7 +144,8 @@ export default function App() {
     <div className="page">
       <div className="ambient" aria-hidden="true" />
       <Header />
-      <SisterStrip current="prompt-diff" />
+      <SisterStrip current="prompt-diff" payload={after || before} />
+      <HandoffBanner onPaste={(text) => { setAfter(text); setSampleId(null); }} />
       <main className="layout">
         <Composer
           before={before}
