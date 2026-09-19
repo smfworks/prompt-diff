@@ -2,6 +2,8 @@ import type { DiffRow, DiffSummary, DisplayItem, PromptDiff, WordPart } from "..
 
 const WORD_DIFF_MAX = 180;
 const DEFAULT_CONTEXT = 1;
+export const MAX_PASTE = 50_000;
+export const MAX_DIFF_LINES = 2_000;
 
 export function estimateTokens(text: string): number {
   return Math.round(text.length / 4);
@@ -191,7 +193,13 @@ export function collapseRows(rows: DiffRow[], context = DEFAULT_CONTEXT): Displa
   return display;
 }
 
-function summarize(before: string, after: string, rows: DiffRow[]): DiffSummary {
+function summarize(
+  before: string,
+  after: string,
+  rows: DiffRow[],
+  beforeLineCount: number,
+  afterLineCount: number,
+): DiffSummary {
   let added = 0;
   let removed = 0;
   let unchanged = 0;
@@ -212,8 +220,8 @@ function summarize(before: string, after: string, rows: DiffRow[]): DiffSummary 
     removed,
     unchanged,
     changed,
-    beforeLines: splitLines(before).length,
-    afterLines: splitLines(after).length,
+    beforeLines: beforeLineCount,
+    afterLines: afterLineCount,
     beforeChars: before.length,
     afterChars: after.length,
     beforeTokens,
@@ -223,17 +231,19 @@ function summarize(before: string, after: string, rows: DiffRow[]): DiffSummary 
 }
 
 export function diffPrompts(before: string, after: string, context = DEFAULT_CONTEXT): PromptDiff {
-  const empty = before.length === 0 && after.length === 0;
-  const beforeLines = splitLines(before);
-  const afterLines = splitLines(after);
+  const cappedBefore = before.slice(0, MAX_PASTE);
+  const cappedAfter = after.slice(0, MAX_PASTE);
+  const empty = cappedBefore.length === 0 && cappedAfter.length === 0;
+  const beforeLines = splitLines(cappedBefore).slice(0, MAX_DIFF_LINES);
+  const afterLines = splitLines(cappedAfter).slice(0, MAX_DIFF_LINES);
   const rows = empty ? [] : lineRows(beforeLines, afterLines);
-  const identical = !empty && before === after;
+  const identical = !empty && cappedBefore === cappedAfter;
   return {
     rows,
     display: identical || empty ? rows.map((row) => ({ type: "row" as const, row })) : collapseRows(rows, context),
-    summary: summarize(before, after, rows),
+    summary: summarize(cappedBefore, cappedAfter, rows, beforeLines.length, afterLines.length),
     identical,
     empty,
-    id: empty ? "PD-0000" : hashId(before, after),
+    id: empty ? "PD-0000" : hashId(cappedBefore, cappedAfter),
   };
 }
