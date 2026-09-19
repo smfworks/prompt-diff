@@ -143,7 +143,7 @@ export default function App() {
     <div className="page">
       <div className="ambient" aria-hidden="true" />
       <Header />
-      <SisterStrip />
+      <SisterStrip current="prompt-diff" />
       <main className="layout">
         <Composer
           before={before}

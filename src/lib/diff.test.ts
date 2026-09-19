@@ -35,6 +35,15 @@ describe("tokenize", () => {
 });
 
 describe("diffPrompts", () => {
+  it("caps huge pastes before LCS", () => {
+    const before = `${"line\n".repeat(4_000)}unique-before`;
+    const after = `${"line\n".repeat(4_000)}unique-after`;
+    const diff = diffPrompts(before, after);
+    assert.ok(diff.summary.beforeLines <= 2_000);
+    assert.ok(diff.summary.afterLines <= 2_000);
+    assert.ok(diff.summary.beforeChars <= 50_000);
+  });
+
   it("marks empty pastes as empty", () => {
     const diff = diffPrompts("", "");
     assert.equal(diff.empty, true);
